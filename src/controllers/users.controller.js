@@ -13,31 +13,26 @@ export const getUsers = async (req, res) => {
 
 export const getUser = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM usuario WHERE COD_USUARIO = ?', [req.params.COD_USUARIO])
-
-        if (rows.length <= 0) return res.status(404).json({ message: 'Not Found' })
-        res.json(rows[0])
+        const [rows] = await pool.query(`CALL spFindAllUsers()`);
+        res.json(rows);
     } catch (error) {
-        return res.status(500).json({ message: "something went wrong" })
+        console.log(error);
     }
 }
 
 export const createUsers = async (req, res) => {
-    try {
-        const { NOMBRES, APELLIDOS, CORREO, CELULAR, FECHA_NACIMIENTO, CONTRASENA } = req.body;
-        const [rows] = await pool.query('INSERT INTO usuario(NOMBRES, APELLIDOS, CORREO, CELULAR, FECHA_NACIMIENTO, CONTRASENA) VALUES (?,?,?,?,?,?)', [NOMBRES, APELLIDOS, CORREO, CELULAR, FECHA_NACIMIENTO, CONTRASENA])
-        res.send({
-            id: rows.insertId,
-            NOMBRES,
-            APELLIDOS,
-            CORREO,
-            CELULAR,
-            FECHA_NACIMIENTO,
-            CONTRASENA
-        })
+    const nombres = req.body.NOMBRES;
+    const apellidos = req.body.APELLIDOS;
+    const correo = req.body.CORREO;
+    const celular = req.body.CELULAR;
+    const fecha_nacimiento = req.body.FECHA_NACIMIENTO;
+    const contrasena = req.body.CONTRASENA;
 
+    try {
+        const result = await pool.query(`CALL spCreateUsers('${nombres}','${apellidos}','${correo}',${celular},'${fecha_nacimiento}','${contrasena}')`);
+        res.json(result);
     } catch (error) {
-        return res.status(500).json({ message: "something went wrong" })
+        console.log(error);
     }
 }
 
