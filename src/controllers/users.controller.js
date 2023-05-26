@@ -1,17 +1,16 @@
 import { pool } from "../db.js";
 
-export const getUsers = async (req, res) => {
+export const getUser = async (req, res) => {
+    const COD_USUARIO = req.params.COD_USUARIO
     try {
-        const [rows] = await pool.query('SELECT * FROM usuario')
-        res.json(rows)
+        const [rows] = await pool.query(`CALL spFindUser(${COD_USUARIO})`)
+        res.json(rows[0])
     } catch (error) {
-        return res.status(500).json({ message: "something went wrong" })
+        console.error("Ha ocurrido un error");
     }
 
 }
-
-
-export const getUser = async (req, res) => {
+export const getUsers = async (req, res) => {
     try {
         const [rows] = await pool.query(`CALL spFindAllUsers()`);
         res.json(rows);
