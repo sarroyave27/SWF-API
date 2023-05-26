@@ -13,4 +13,4 @@ CREATE TABLE usuario (
 )
 
 INSERT INTO usuario VALUES
-("Sara", "Londoño", "sara@gmail.com", 3142345643, "2023-05-03", "Sara12345")
+(1,"Sara", "Londoño", "sara@gmail.com", 3142345643, "2023-05-03", "Sara12345")

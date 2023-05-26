@@ -8,7 +8,6 @@ export const getUser = async (req, res) => {
     } catch (error) {
         console.error("Ha ocurrido un error");
     }
-
 }
 export const getUsers = async (req, res) => {
     try {
