@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-06-2023 a las 21:46:57
+-- Tiempo de generación: 14-06-2023 a las 00:33:24
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -27,14 +27,34 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+DROP PROCEDURE IF EXISTS `spCreatePlan`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreatePlan` (IN `_NOMBRE` VARCHAR(100), IN `_DESCRIPCION` VARCHAR(100))   BEGIN 
+INSERT INTO plan(NOMBRE,DESCRIPCION) VALUES (_NOMBRE,_DESCRIPCION);
+END$$
+
 DROP PROCEDURE IF EXISTS `spCreateUsers`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreateUsers` (IN `_NOMBRES` VARCHAR(50), IN `_APELLIDOS` VARCHAR(50), IN `_CORREO` VARCHAR(50), IN `_CELULAR` INT(10), IN `_FECHA_NACIMIENTO` DATE, IN `_CONTRASENA` LONGTEXT)   BEGIN 
-INSERT INTO usuario(NOMBRES,APELLIDOS,CORREO,CELULAR,FECHA_NACIMIENTO,CONTRASEÑA) VALUES (_NOMBRES,_APELLIDOS,_CORREO,_CELULAR,_FECHA_NACIMIENTO,_CONTRASENA);
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreateUsers` (IN `_NOMBRES` VARCHAR(50), IN `_APELLIDOS` VARCHAR(50), IN `_CORREO` VARCHAR(50), IN `_CELULAR` INT(10), IN `_FECHA_NACIMIENTO` DATE, IN `_CONTRASENA` LONGTEXT, IN `_COD_ROL` INT(10))   BEGIN 
+INSERT INTO usuario(NOMBRES,APELLIDOS,CORREO,CELULAR,FECHA_NACIMIENTO,CONTRASENA,COD_ROL) VALUES (_NOMBRES,_APELLIDOS,_CORREO,_CELULAR,_FECHA_NACIMIENTO,_CONTRASENA, _COD_ROL);
+END$$
+
+DROP PROCEDURE IF EXISTS `spDisableUser`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spDisableUser` (IN `_COD_USUARIO` INT(100), IN `_ESTADO` BOOLEAN)   BEGIN
+	UPDATE usuario SET ESTADO = _ESTADO WHERE COD_USUARIO= _COD_USUARIO;
+END$$
+
+DROP PROCEDURE IF EXISTS `spEditPlan`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spEditPlan` (IN `_COD_PLAN` INT(10), IN `_DESCRIPCION` VARCHAR(100))   BEGIN
+	UPDATE plan SET DESCRIPCION = _DESCRIPCION WHERE COD_PLAN= _COD_PLAN;
+END$$
+
+DROP PROCEDURE IF EXISTS `spFindAllPlans`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAllPlans` ()   BEGIN
+	SELECT COD_PLAN, NOMBRE, DESCRIPCION FROM plan;
 END$$
 
 DROP PROCEDURE IF EXISTS `spFindAllUsers`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAllUsers` ()   BEGIN
-	SELECT COD_USUARIO, NOMBRES, APELLIDOS, FECHA_NACIMIENTO FROM usuario;
+	SELECT COD_USUARIO, NOMBRES, APELLIDOS, FECHA_NACIMIENTO,COD_ROL,ESTADO,CELULAR FROM usuario;
 END$$
 
 DROP PROCEDURE IF EXISTS `spFindUser`$$
@@ -72,7 +92,16 @@ CREATE TABLE IF NOT EXISTS `plan` (
   `DESCRIPCION` varchar(100) NOT NULL,
   PRIMARY KEY (`COD_PLAN`),
   UNIQUE KEY `NOMBRE` (`NOMBRE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `plan`
+--
+
+INSERT INTO `plan` (`COD_PLAN`, `NOMBRE`, `DESCRIPCION`) VALUES
+(1, 'Tren Superior', '¡Presentamos el \"Plan del Tren Superior\"! Un programa de entrenamiento focalizado diseñado para fort'),
+(2, 'Tren Inferior', '¡Descubre el \"Plan de Tren Inferior\"! Este programa de entrenamiento se enfoca en fortalecer y tonif'),
+(3, 'Plan General', '¡Bienvenido al \"Plan Total de Acondicionamiento\"! Este programa de entrenamiento integral está diseñ');
 
 -- --------------------------------------------------------
 
@@ -136,6 +165,15 @@ CREATE TABLE IF NOT EXISTS `rol` (
   PRIMARY KEY (`COD_ROL`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `rol`
+--
+
+INSERT INTO `rol` (`COD_ROL`, `ROL`) VALUES
+(1, 'Usuario'),
+(2, 'Entrenador'),
+(3, 'Admin');
+
 -- --------------------------------------------------------
 
 --
@@ -152,11 +190,23 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `FECHA_NACIMIENTO` date NOT NULL,
   `CONTRASENA` longtext NOT NULL,
   `COD_ROL` int(10) DEFAULT NULL,
+  `ESTADO` tinyint(1) DEFAULT 1,
   PRIMARY KEY (`COD_USUARIO`),
   UNIQUE KEY `CORREO` (`CORREO`),
   UNIQUE KEY `CELULAR` (`CELULAR`),
   KEY `COD_ROL` (`COD_ROL`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`COD_USUARIO`, `NOMBRES`, `APELLIDOS`, `CORREO`, `CELULAR`, `FECHA_NACIMIENTO`, `CONTRASENA`, `COD_ROL`, `ESTADO`) VALUES
+(1, 'Kevin', 'Alocer', 'kevin123@gmail.com', '2147483647', '2002-05-02', '2002', 1, 1),
+(2, 'Carmen', 'Valdibia', 'Maricarmen@gmail.com', '3134141', '2002-03-02', '123', 1, 1),
+(8, 'Alejandro', 'Carcia', 'kevin@gmail.com', '32058327', '2002-05-03', 'kevin12', 1, 1),
+(10, 'Mariano', 'Garcia', 'KevinPro@gmail.com', '314573', '2002-04-03', '123123', 1, 1),
+(12, 'Mariano', 'Garcia', 'KevinPro123@gmail.com', '38', '2002-04-09', '12', 1, 1);
 
 --
 -- Restricciones para tablas volcadas
