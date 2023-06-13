@@ -10,9 +10,9 @@ const router = Router();
 
   router.post("/users", controllers.createUsers) 
   
-  router.patch("/users/:COD_USUARIO", controllers.createUsers)
+  router.patch("/users/:COD_USUARIO", controllers.disableUser)
   
-  router.delete("/users/:COD_USUARIO", controllers.deleteUsers)
+  //router.delete("/users/:COD_USUARIO", controllers.deleteUsers)
   
 export default router;
 

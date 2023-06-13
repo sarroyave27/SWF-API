@@ -1,7 +1,7 @@
 import { pool } from "../db.js";
 
 export const getUser = async (req, res) => {
-    const COD_USUARIO = req.params.COD_USUARIO
+    const {COD_USUARIO} = req.params
     try {
         const [rows] = await pool.query(`CALL spFindUser(${COD_USUARIO})`)
         res.json(rows[0])
@@ -19,33 +19,29 @@ export const getUsers = async (req, res) => {
 }
 
 export const createUsers = async (req, res) => {
-    const nombres = req.body.NOMBRES;
-    const apellidos = req.body.APELLIDOS;
-    const correo = req.body.CORREO;
-    const celular = req.body.CELULAR;
-    const fecha_nacimiento = req.body.FECHA_NACIMIENTO;
-    const contrasena = req.body.CONTRASENA;
-
+    const {NOMBRES,APELLIDOS, CORREO, CELULAR, FECHA_NACIMIENTO,CONTRASENA,COD_ROL} = req.body
     try {
-        const result = await pool.query(`CALL spCreateUsers('${nombres}','${apellidos}','${correo}',${celular},'${fecha_nacimiento}','${contrasena}')`);
+        const result = await pool.query(`CALL spCreateUsers('${NOMBRES}','${APELLIDOS}','${CORREO}',${CELULAR},'${FECHA_NACIMIENTO}','${CONTRASENA}',${COD_ROL})`);
         res.json(result);
     } catch (error) {
         console.log(error);
     }
 }
 
-export const deleteUsers = async (req, res) => {
+export const disableUser = async (req, res) => {
+    const {COD_USUARIO} = req.params
+    const {ESTADO} = req.body
     try {
-        const [result] = await pool.query('DELETE FROM usuario WHERE COD_USUARIO = ?', req.params.COD_USUARIO)
-
-        if (result.affectedRows <= 0) return res.status(404).json({ message: "Not found" })
-        console.log(result)
-        res.sendStatus(204)
+        const result = await pool.query(`CALL spDisableUser(${COD_USUARIO},${ESTADO})`)
+        if (result[0].affectedRows != 0) {
+            res.json(result[0])
+        } else
+            res.json({ "msg": "No Actualizó" })
     } catch (error) {
-        return res.status(500).json({ message: "something went wrong" })
+        console.error(error);
     }
 }
-
+/*
 export const updateUsers = async (req, res) => {
     try {
         const { COD_USUARIO } = req.params
@@ -64,4 +60,4 @@ export const updateUsers = async (req, res) => {
 
     }
 }
-
+*/
