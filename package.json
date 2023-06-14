@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "dev": "nodemon app/index.js --exec babel-node",
+    "start": "node app/index.js --exec babel-node",
+    "build": "babel app --out-dir dist"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,10 @@
     "mysql2": "^3.2.4"
   },
   "devDependencies": {
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/node": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
     "nodemon": "^2.0.22"
   }
 }
