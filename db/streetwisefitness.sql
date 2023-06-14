@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 14-06-2023 a las 00:33:24
--- Versión del servidor: 10.4.24-MariaDB
--- Versión de PHP: 8.1.6
+-- Servidor: localhost
+-- Tiempo de generación: 14-06-2023 a las 05:52:28
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -32,6 +32,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreatePlan` (IN `_NOMBRE` VARCHAR
 INSERT INTO plan(NOMBRE,DESCRIPCION) VALUES (_NOMBRE,_DESCRIPCION);
 END$$
 
+DROP PROCEDURE IF EXISTS `spCreateRecipes`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreateRecipes` (IN `_NOMBRE` VARCHAR(100), IN `_DESCRIPCION` VARCHAR(100), IN `_COD_USUARIO` INT(100))   BEGIN 
+INSERT INTO recetas(NOMBRE,DESCRIPCION,COD_USUARIO) VALUES (_NOMBRE,_DESCRIPCION,_COD_USUARIO);
+END$$
+
 DROP PROCEDURE IF EXISTS `spCreateUsers`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreateUsers` (IN `_NOMBRES` VARCHAR(50), IN `_APELLIDOS` VARCHAR(50), IN `_CORREO` VARCHAR(50), IN `_CELULAR` INT(10), IN `_FECHA_NACIMIENTO` DATE, IN `_CONTRASENA` LONGTEXT, IN `_COD_ROL` INT(10))   BEGIN 
 INSERT INTO usuario(NOMBRES,APELLIDOS,CORREO,CELULAR,FECHA_NACIMIENTO,CONTRASENA,COD_ROL) VALUES (_NOMBRES,_APELLIDOS,_CORREO,_CELULAR,_FECHA_NACIMIENTO,_CONTRASENA, _COD_ROL);
@@ -47,6 +52,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spEditPlan` (IN `_COD_PLAN` INT(10)
 	UPDATE plan SET DESCRIPCION = _DESCRIPCION WHERE COD_PLAN= _COD_PLAN;
 END$$
 
+DROP PROCEDURE IF EXISTS `spEditUser`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spEditUser` (IN `_COD_USUARIO` INT(100), IN `_CONTRASENA` LONGTEXT, IN `_CELULAR` INT(20))   BEGIN
+	UPDATE usuario SET CELULAR =_CELULAR AND CONTRASENA =_CONTRASENA  WHERE COD_USUARIO= _COD_USUARIO;
+END$$
+
 DROP PROCEDURE IF EXISTS `spFindAllPlans`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAllPlans` ()   BEGIN
 	SELECT COD_PLAN, NOMBRE, DESCRIPCION FROM plan;
@@ -55,6 +65,11 @@ END$$
 DROP PROCEDURE IF EXISTS `spFindAllUsers`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAllUsers` ()   BEGIN
 	SELECT COD_USUARIO, NOMBRES, APELLIDOS, FECHA_NACIMIENTO,COD_ROL,ESTADO,CELULAR FROM usuario;
+END$$
+
+DROP PROCEDURE IF EXISTS `spFindAPlan`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAPlan` (IN `_COD_PLAN` INT(10))   BEGIN
+	SELECT NOMBRE,DESCRIPCION FROM plan WHERE COD_PLAN =_COD_PLAN;
 END$$
 
 DROP PROCEDURE IF EXISTS `spFindUser`$$
@@ -77,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `asistencia` (
   `COD_USERPLAN` int(100) DEFAULT NULL,
   PRIMARY KEY (`COD_ASIS`),
   KEY `COD_USERPLAN` (`COD_USERPLAN`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -92,14 +107,14 @@ CREATE TABLE IF NOT EXISTS `plan` (
   `DESCRIPCION` varchar(100) NOT NULL,
   PRIMARY KEY (`COD_PLAN`),
   UNIQUE KEY `NOMBRE` (`NOMBRE`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `plan`
 --
 
 INSERT INTO `plan` (`COD_PLAN`, `NOMBRE`, `DESCRIPCION`) VALUES
-(1, 'Tren Superior', '¡Presentamos el \"Plan del Tren Superior\"! Un programa de entrenamiento focalizado diseñado para fort'),
+(1, 'Tren Superior', 'Ejercicios Superior'),
 (2, 'Tren Inferior', '¡Descubre el \"Plan de Tren Inferior\"! Este programa de entrenamiento se enfoca en fortalecer y tonif'),
 (3, 'Plan General', '¡Bienvenido al \"Plan Total de Acondicionamiento\"! Este programa de entrenamiento integral está diseñ');
 
@@ -117,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `planusuario` (
   PRIMARY KEY (`COD_USERPLAN`),
   KEY `COD_USUARIO` (`COD_USUARIO`),
   KEY `COD_PLAN` (`COD_PLAN`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -134,7 +149,18 @@ CREATE TABLE IF NOT EXISTS `recetas` (
   PRIMARY KEY (`COD_RECETA`),
   UNIQUE KEY `NOMBRE` (`NOMBRE`),
   KEY `COD_USUARIO` (`COD_USUARIO`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `recetas`
+--
+
+INSERT INTO `recetas` (`COD_RECETA`, `NOMBRE`, `DESCRIPCION`, `COD_USUARIO`) VALUES
+(3, 'Limonada de coco', 'Baja 80 Kilos ahora!', 1),
+(4, 'Baja Kilos 3000', 'Baja 20 kilos en media hora', 2),
+(5, 'Banana Coco', 'Baja 80kilos', 2),
+(12, 'Banano Monstruo', 'Baja Grasita', 2),
+(14, 'Banano Exotico', 'Que se lo que dios quiera', 1);
 
 -- --------------------------------------------------------
 
@@ -150,7 +176,15 @@ CREATE TABLE IF NOT EXISTS `recetas_usuarios` (
   PRIMARY KEY (`COD_RECETA_USUARIO`),
   KEY `COD_RECETA` (`COD_RECETA`),
   KEY `COD_USUARIO` (`COD_USUARIO`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `recetas_usuarios`
+--
+
+INSERT INTO `recetas_usuarios` (`COD_RECETA_USUARIO`, `COD_RECETA`, `COD_USUARIO`) VALUES
+(1, NULL, 1),
+(2, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -163,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `rol` (
   `COD_ROL` int(10) NOT NULL,
   `ROL` varchar(100) NOT NULL,
   PRIMARY KEY (`COD_ROL`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `rol`
@@ -195,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   UNIQUE KEY `CORREO` (`CORREO`),
   UNIQUE KEY `CELULAR` (`CELULAR`),
   KEY `COD_ROL` (`COD_ROL`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
@@ -206,7 +240,7 @@ INSERT INTO `usuario` (`COD_USUARIO`, `NOMBRES`, `APELLIDOS`, `CORREO`, `CELULAR
 (2, 'Carmen', 'Valdibia', 'Maricarmen@gmail.com', '3134141', '2002-03-02', '123', 1, 1),
 (8, 'Alejandro', 'Carcia', 'kevin@gmail.com', '32058327', '2002-05-03', 'kevin12', 1, 1),
 (10, 'Mariano', 'Garcia', 'KevinPro@gmail.com', '314573', '2002-04-03', '123123', 1, 1),
-(12, 'Mariano', 'Garcia', 'KevinPro123@gmail.com', '38', '2002-04-09', '12', 1, 1);
+(12, 'Mariano', 'Garcia', 'KevinPro123@gmail.com', '0', '2002-04-09', 'sebastianpro', 1, 1);
 
 --
 -- Restricciones para tablas volcadas
