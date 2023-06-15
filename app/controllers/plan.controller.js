@@ -30,3 +30,15 @@ export const editPlan = async(req,res) => {
         console.error(error);
     }
 }
+export const deletePlan = async(req,res) => {
+    const {COD_PLAN} = req.params
+    try {
+        const result = await pool.query(`CALL spDeletePlan(${COD_PLAN})`)
+        if (result[0].affectedRows == 1) {
+            res.json({ "msg": "Borrado Correctamente"})
+        } else
+            res.json({ "msg": "No se pudo borrar"})
+    } catch (error) {
+        console.error(error);
+    }
+}

@@ -8,5 +8,7 @@ const router = Router();
   router.get("/Aplan/:COD_PLAN", controllers.findAPlan) 
 
   router.patch("/Aplan/:COD_PLAN", controllers.editPlan) 
+
+  router.delete("/Aplan/:COD_PLAN", controllers.deletePlan)
   
 export default router;
