@@ -11,6 +11,8 @@ const router = Router();
   router.post("/users", controllers.createUsers) 
   
   router.patch("/users/:COD_USUARIO", controllers.disableUser)
+
+  router.get("/consult", controllers.consultUser) 
   
   //router.delete("/users/:COD_USUARIO", controllers.deleteUsers)
   

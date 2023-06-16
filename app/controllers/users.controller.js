@@ -9,6 +9,16 @@ export const getUser = async (req, res) => {
         console.error("Ha ocurrido un error");
     }
 }
+
+export const consultUser = async (req, res) => {
+    const {CORREO, CONTRASENA} = req.body
+    try {
+        const [rows] = await pool.query(`CALL spConsultUser('${CORREO}','${CONTRASENA}')`)
+        res.json(rows[0])
+    } catch (error) {
+        console.error("Ha ocurrido un error");
+    }
+}
 export const getUsers = async (req, res) => {
     try {
         const [rows] = await pool.query(`CALL spFindAllUsers()`);
