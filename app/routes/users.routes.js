@@ -12,7 +12,7 @@ const router = Router();
   
   router.patch("/users/:COD_USUARIO", controllers.disableUser)
 
-  router.get("/consult", controllers.consultUser) 
+  router.post("/consult", controllers.consultUser) 
   
   //router.delete("/users/:COD_USUARIO", controllers.deleteUsers)
   
