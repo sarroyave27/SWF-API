@@ -43,7 +43,8 @@ export const disableUser = async (req, res) => {
     const {ESTADO} = req.body
     try {
         const result = await pool.query(`CALL spDisableUser(${COD_USUARIO},${ESTADO})`)
-        if (result[0].affectedRows != 0) {
+        if (result[0].affectedRows == 1) {
+            console.log("Estado afectado");
             res.json(result[0])
         } else
             res.json({ "msg": "No Actualizó" })
