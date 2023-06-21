@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 14-06-2023 a las 05:52:28
+-- Tiempo de generación: 21-06-2023 a las 01:07:57
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -27,6 +27,16 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+DROP PROCEDURE IF EXISTS `spConsultUser`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spConsultUser` (IN `_CORREO` VARCHAR(50), IN `_CONTRASENA` LONGTEXT)   BEGIN
+	SELECT CORREO,CONTRASENA,NOMBRES FROM usuario WHERE CORREO =_CORREO &&  CONTRASENA=_CONTRASENA;
+END$$
+
+DROP PROCEDURE IF EXISTS `spCreateAssis`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreateAssis` (IN `_FECHA` DATE)   BEGIN 
+	INSERT INTO asistencia(FECHA) VALUES (_FECHA);
+END$$
+
 DROP PROCEDURE IF EXISTS `spCreatePlan`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreatePlan` (IN `_NOMBRE` VARCHAR(100), IN `_DESCRIPCION` VARCHAR(100))   BEGIN 
 INSERT INTO plan(NOMBRE,DESCRIPCION) VALUES (_NOMBRE,_DESCRIPCION);
@@ -42,6 +52,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreateUsers` (IN `_NOMBRES` VARCH
 INSERT INTO usuario(NOMBRES,APELLIDOS,CORREO,CELULAR,FECHA_NACIMIENTO,CONTRASENA,COD_ROL) VALUES (_NOMBRES,_APELLIDOS,_CORREO,_CELULAR,_FECHA_NACIMIENTO,_CONTRASENA, _COD_ROL);
 END$$
 
+DROP PROCEDURE IF EXISTS `spDeletePlan`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spDeletePlan` (IN `_COD_PLAN` INT(10))   BEGIN
+	DELETE FROM plan WHERE COD_PLAN = _COD_PLAN; 
+END$$
+
 DROP PROCEDURE IF EXISTS `spDisableUser`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spDisableUser` (IN `_COD_USUARIO` INT(100), IN `_ESTADO` BOOLEAN)   BEGIN
 	UPDATE usuario SET ESTADO = _ESTADO WHERE COD_USUARIO= _COD_USUARIO;
@@ -50,6 +65,11 @@ END$$
 DROP PROCEDURE IF EXISTS `spEditPlan`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spEditPlan` (IN `_COD_PLAN` INT(10), IN `_DESCRIPCION` VARCHAR(100))   BEGIN
 	UPDATE plan SET DESCRIPCION = _DESCRIPCION WHERE COD_PLAN= _COD_PLAN;
+END$$
+
+DROP PROCEDURE IF EXISTS `spEditRecipes`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spEditRecipes` (IN `_COD_RECETA` INT, IN `_NOMBRE` VARCHAR(100), IN `_DESCRIPCION` VARCHAR(100))   BEGIN
+	UPDATE recetas SET NOMBRE = _NOMBRE AND DESCRIPCION =_DESCRIPCION  WHERE COD_RECETA = _COD_RECETA;
 END$$
 
 DROP PROCEDURE IF EXISTS `spEditUser`$$
@@ -64,7 +84,7 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spFindAllUsers`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAllUsers` ()   BEGIN
-	SELECT COD_USUARIO, NOMBRES, APELLIDOS, FECHA_NACIMIENTO,COD_ROL,ESTADO,CELULAR FROM usuario;
+	SELECT COD_USUARIO, NOMBRES, APELLIDOS, FECHA_NACIMIENTO,CORREO,COD_ROL,ESTADO,CELULAR,CONTRASENA FROM usuario;
 END$$
 
 DROP PROCEDURE IF EXISTS `spFindAPlan`$$
@@ -108,15 +128,6 @@ CREATE TABLE IF NOT EXISTS `plan` (
   PRIMARY KEY (`COD_PLAN`),
   UNIQUE KEY `NOMBRE` (`NOMBRE`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Volcado de datos para la tabla `plan`
---
-
-INSERT INTO `plan` (`COD_PLAN`, `NOMBRE`, `DESCRIPCION`) VALUES
-(1, 'Tren Superior', 'Ejercicios Superior'),
-(2, 'Tren Inferior', '¡Descubre el \"Plan de Tren Inferior\"! Este programa de entrenamiento se enfoca en fortalecer y tonif'),
-(3, 'Plan General', '¡Bienvenido al \"Plan Total de Acondicionamiento\"! Este programa de entrenamiento integral está diseñ');
 
 -- --------------------------------------------------------
 
@@ -229,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   UNIQUE KEY `CORREO` (`CORREO`),
   UNIQUE KEY `CELULAR` (`CELULAR`),
   KEY `COD_ROL` (`COD_ROL`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
@@ -240,7 +251,13 @@ INSERT INTO `usuario` (`COD_USUARIO`, `NOMBRES`, `APELLIDOS`, `CORREO`, `CELULAR
 (2, 'Carmen', 'Valdibia', 'Maricarmen@gmail.com', '3134141', '2002-03-02', '123', 1, 1),
 (8, 'Alejandro', 'Carcia', 'kevin@gmail.com', '32058327', '2002-05-03', 'kevin12', 1, 1),
 (10, 'Mariano', 'Garcia', 'KevinPro@gmail.com', '314573', '2002-04-03', '123123', 1, 1),
-(12, 'Mariano', 'Garcia', 'KevinPro123@gmail.com', '0', '2002-04-09', 'sebastianpro', 1, 1);
+(12, 'Mariano', 'Garcia', 'KevinPro123@gmail.com', '0', '2002-04-09', 'sebastianpro', 1, 1),
+(13, 'Kevin Alberto', 'Valencia', 'kevinalg2020@gmail.com', '313457323', '2023-06-06', 'KevinLO3', 1, 1),
+(14, 'Kevin Julian', 'Zaragoza', 'Kevincae@gmail.com', '31313', '2000-06-14', '40404', 2, 1),
+(15, 'Kevin Julian', 'Garcia', 'kevin1203@gmail.com', '31321', '2023-06-12', '1234', 1, 1),
+(16, 'Antonio', 'Marcos', 'Maricarmensa@gmail.com', '3131', '2023-06-06', 'test1', 1, 1),
+(17, 'Arnoldo', 'Cabal', 'ArCabal@gmail.com', '313433', '2023-06-05', '987', 1, 1),
+(18, 'Avaro', 'Guitierez', 'Alva@gmail.com', '314141', '2023-06-13', '123v', 1, 1);
 
 --
 -- Restricciones para tablas volcadas

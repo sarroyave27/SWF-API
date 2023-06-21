@@ -51,7 +51,8 @@ export const disableUser = async (req, res) => {
     } catch (error) {
         console.error(error);
     }
-}
+    }
+
 /*
 export const updateUsers = async (req, res) => {
     try {
