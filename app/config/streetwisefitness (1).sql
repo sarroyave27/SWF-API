@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-06-2023 a las 16:59:15
+-- Tiempo de generación: 24-06-2023 a las 20:04:02
 -- Versión del servidor: 10.4.19-MariaDB
 -- Versión de PHP: 8.0.6
 
@@ -57,6 +57,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spDeletePlan` (IN `_COD_PLAN` INT(1
 	DELETE FROM plan WHERE COD_PLAN = _COD_PLAN; 
 END$$
 
+DROP PROCEDURE IF EXISTS `spDisablePlan`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spDisablePlan` (IN `_COD_PLAN` BOOLEAN, IN `_ESTADO` BOOLEAN)  BEGIN
+	UPDATE plan SET ESTADO = _ESTADO WHERE COD_PLAN= _COD_PLAN;
+END$$
+
 DROP PROCEDURE IF EXISTS `spDisableUser`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spDisableUser` (IN `_COD_USUARIO` INT(100), IN `_ESTADO` BOOLEAN)  BEGIN
 	UPDATE usuario SET ESTADO = _ESTADO WHERE COD_USUARIO= _COD_USUARIO;
@@ -79,7 +84,7 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spFindAllPlans`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAllPlans` ()  BEGIN
-	SELECT COD_PLAN, NOMBRE, DESCRIPCION FROM plan;
+	SELECT COD_PLAN, NOMBRE, DESCRIPCION, ESTADO FROM plan;
 END$$
 
 DROP PROCEDURE IF EXISTS `spFindAllUsers`$$
@@ -89,12 +94,17 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spFindAPlan`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAPlan` (IN `_COD_PLAN` INT(10))  BEGIN
-	SELECT NOMBRE,DESCRIPCION FROM plan WHERE COD_PLAN =_COD_PLAN;
+	SELECT NOMBRE,DESCRIPCION, ESTADO FROM plan WHERE COD_PLAN =_COD_PLAN;
 END$$
 
 DROP PROCEDURE IF EXISTS `spFindUser`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindUser` (IN `_COD_USUARIO` INT(10))  BEGIN
 	SELECT COD_USUARIO,NOMBRES,APELLIDOS,CORREO,CELULAR,FECHA_NACIMIENTO FROM usuario WHERE COD_USUARIO =_COD_USUARIO;
+END$$
+
+DROP PROCEDURE IF EXISTS `spGetAllPlanUser`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetAllPlanUser` ()  BEGIN 
+SELECT A.COD_USERPLAN, A.COD_USUARIO, U.CORREO, A.COD_PLAN, P.NOMBRE, P.DESCRIPCION, P.ESTADO FROM planusuario A INNER JOIN PLAN P ON A.COD_PLAN = P.COD_PLAN INNER JOIN USUARIO U ON A.COD_USUARIO = U.COD_USUARIO;
 END$$
 
 DELIMITER ;
@@ -125,6 +135,7 @@ CREATE TABLE IF NOT EXISTS `plan` (
   `COD_PLAN` int(10) NOT NULL AUTO_INCREMENT,
   `NOMBRE` varchar(100) NOT NULL,
   `DESCRIPCION` longtext NOT NULL,
+  `ESTADO` tinyint(1) NOT NULL,
   PRIMARY KEY (`COD_PLAN`),
   UNIQUE KEY `NOMBRE` (`NOMBRE`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
@@ -133,9 +144,9 @@ CREATE TABLE IF NOT EXISTS `plan` (
 -- Volcado de datos para la tabla `plan`
 --
 
-INSERT INTO `plan` (`COD_PLAN`, `NOMBRE`, `DESCRIPCION`) VALUES
-(4, 'Recomposicion corporal', 'Entrenamiento basado en dietas para la recomposicion corporal y ejercicios aerobicos'),
-(5, 'Deficit calorico', 'Plan desarrollado para personas en sobre peso; basado en entrenamientos aerobicos y de perdida de calorias');
+INSERT INTO `plan` (`COD_PLAN`, `NOMBRE`, `DESCRIPCION`, `ESTADO`) VALUES
+(4, 'Recomposicion corporal', 'Entrenamiento basado en dietas para la recomposicion corporal y ejercicios aerobicos', 1),
+(5, 'Deficit calorico', 'Plan desarrollado para personas en sobre peso; basado en entrenamientos aerobicos y de perdida de calorias', 0);
 
 -- --------------------------------------------------------
 
@@ -151,7 +162,16 @@ CREATE TABLE IF NOT EXISTS `planusuario` (
   PRIMARY KEY (`COD_USERPLAN`),
   KEY `COD_USUARIO` (`COD_USUARIO`),
   KEY `COD_PLAN` (`COD_PLAN`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `planusuario`
+--
+
+INSERT INTO `planusuario` (`COD_USERPLAN`, `COD_USUARIO`, `COD_PLAN`) VALUES
+(1, 14, 4),
+(2, 10, 4),
+(3, 18, 5);
 
 -- --------------------------------------------------------
 
@@ -227,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   UNIQUE KEY `CORREO` (`CORREO`),
   UNIQUE KEY `CELULAR` (`CELULAR`),
   KEY `COD_ROL` (`COD_ROL`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 --
 -- Volcado de datos para la tabla `usuario`
@@ -244,7 +264,8 @@ INSERT INTO `usuario` (`COD_USUARIO`, `NOMBRES`, `APELLIDOS`, `CORREO`, `CELULAR
 (15, 'Kevin Julian', 'Garcia', 'kevin1203@gmail.com', '31321', '2023-06-12', '1234', 1, 1),
 (16, 'Antonio', 'Marcos', 'Maricarmensa@gmail.com', '3131', '2023-06-06', 'test1', 1, 1),
 (17, 'Arnoldo', 'Cabal', 'ArCabal@gmail.com', '313433', '2023-06-05', '987', 1, 1),
-(18, 'Avaro', 'Guitierez', 'Alva@gmail.com', '314141', '2023-06-13', '123v', 1, 1);
+(18, 'Avaro', 'Guitierez', 'Alva@gmail.com', '314141', '2023-06-13', '123v', 1, 1),
+(19, 'Isabella', 'Hernandez', 'isabella@gmail.com', '423825556', '2005-05-04', '123', 1, 1);
 
 --
 -- Restricciones para tablas volcadas
