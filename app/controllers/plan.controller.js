@@ -19,9 +19,9 @@ export const findAllPlans = async(req,res) => {
 }
 export const editPlan = async(req,res) => {
     const {COD_PLAN} = req.params
-    const {DESCRIPCION} = req.body
+    const {DESCRIPCION, ESTADO} = req.body
     try {
-        const result = await pool.query(`CALL spEditPlan(${COD_PLAN},'${DESCRIPCION}')`)
+        const result = await pool.query(`CALL spEditPlan(${COD_PLAN},'${DESCRIPCION}',${ESTADO})`)
         if (result[0].affectedRows != 0) {
             res.json(result[0])
         } else
@@ -40,5 +40,14 @@ export const deletePlan = async(req,res) => {
             res.json({ "msg": "No se pudo borrar"})
     } catch (error) {
         console.error(error);
+    }
+}
+
+export const findAllPlanUser = async(req,res) => {
+    try {
+        const [rows] = await pool.query(`call spGetAllPlanUser()`);
+        res.json(rows);
+    } catch (error) {
+        console.log(error);
     }
 }
