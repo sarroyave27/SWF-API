@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-06-2023 a las 20:04:02
+-- Tiempo de generación: 28-06-2023 a las 05:01:21
 -- Versión del servidor: 10.4.19-MariaDB
 -- Versión de PHP: 8.0.6
 
@@ -107,22 +107,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetAllPlanUser` ()  BEGIN
 SELECT A.COD_USERPLAN, A.COD_USUARIO, U.CORREO, A.COD_PLAN, P.NOMBRE, P.DESCRIPCION, P.ESTADO FROM planusuario A INNER JOIN PLAN P ON A.COD_PLAN = P.COD_PLAN INNER JOIN USUARIO U ON A.COD_USUARIO = U.COD_USUARIO;
 END$$
 
+DROP PROCEDURE IF EXISTS `spGetRecipe`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetRecipe` ()  BEGIN
+SELECT R.COD_RECETA, R.NOMBRE, R.DESCRIPCION, R.COD_USUARIO, U.CORREO, R.estado FROM recetas R INNER JOIN usuario U ON R.COD_USUARIO = U.COD_USUARIO;
+END$$
+
 DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `asistencia`
---
-
-DROP TABLE IF EXISTS `asistencia`;
-CREATE TABLE IF NOT EXISTS `asistencia` (
-  `COD_ASIS` int(100) NOT NULL AUTO_INCREMENT,
-  `FECHA` date NOT NULL,
-  `COD_USERPLAN` int(100) DEFAULT NULL,
-  PRIMARY KEY (`COD_ASIS`),
-  KEY `COD_USERPLAN` (`COD_USERPLAN`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -270,12 +260,6 @@ INSERT INTO `usuario` (`COD_USUARIO`, `NOMBRES`, `APELLIDOS`, `CORREO`, `CELULAR
 --
 -- Restricciones para tablas volcadas
 --
-
---
--- Filtros para la tabla `asistencia`
---
-ALTER TABLE `asistencia`
-  ADD CONSTRAINT `asistencia_ibfk_1` FOREIGN KEY (`COD_USERPLAN`) REFERENCES `planusuario` (`COD_USERPLAN`);
 
 --
 -- Filtros para la tabla `planusuario`
