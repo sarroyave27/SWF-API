@@ -3,9 +3,11 @@ import * as controllers from "../controllers/plan.controller.js"
 
 const router = Router();
 
-  router.get("/AllPlans", controllers.findAllPlans) 
+  router.get("/AllPlans", controllers.findAllPlans)
 
-  router.get("/Aplan/:COD_PLAN", controllers.findAPlan) 
+  router.get("/Aplan/:COD_PLAN", controllers.findAPlan)
+
+  router.post("/createPlan", controllers.createPlan)  
 
   router.patch("/Aplan/:COD_PLAN", controllers.editPlan) 
 

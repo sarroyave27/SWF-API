@@ -9,6 +9,15 @@ export const findAPlan = async(req,res) => {
         console.error("Ha ocurrido un error");
     }
 }
+export const createPlan = async(req,res) => {
+    const {NOMBRE,DESCRIPCION} = req.body
+    try {
+        const result = await pool.query(`CALL spCreatePlan('${NOMBRE}','${DESCRIPCION}')`);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+    }
+}
 export const findAllPlans = async(req,res) => {
     try {
         const [rows] = await pool.query(`CALL spFindAllPlans()`);
