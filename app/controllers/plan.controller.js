@@ -10,9 +10,9 @@ export const findAPlan = async(req,res) => {
     }
 }
 export const createPlan = async(req,res) => {
-    const {NOMBRE,DESCRIPCION} = req.body
+    const {NOMBRE,DESCRIPCION,TELEFONO} = req.body
     try {
-        const result = await pool.query(`CALL spCreatePlan('${NOMBRE}','${DESCRIPCION}')`);
+        const result = await pool.query(`CALL spCreatePlan('${NOMBRE}','${DESCRIPCION}',${TELEFONO})`);
         res.json(result);
     } catch (error) {
         console.log(error);
@@ -28,9 +28,9 @@ export const findAllPlans = async(req,res) => {
 }
 export const editPlan = async(req,res) => {
     const {COD_PLAN} = req.params
-    const {DESCRIPCION, ESTADO} = req.body
+    const {DESCRIPCION,TELEFONO, ESTADO} = req.body
     try {
-        const result = await pool.query(`CALL spEditPlan(${COD_PLAN},'${DESCRIPCION}',${ESTADO})`)
+        const result = await pool.query(`CALL spEditPlan(${COD_PLAN},'${DESCRIPCION}', ${TELEFONO},${ESTADO})`)
         if (result[0].affectedRows != 0) {
             res.json(result[0])
         } else
