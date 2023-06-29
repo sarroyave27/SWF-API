@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-06-2023 a las 08:24:12
+-- Tiempo de generación: 29-06-2023 a las 23:18:37
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.0.25
 
@@ -29,7 +29,7 @@ DELIMITER $$
 --
 DROP PROCEDURE IF EXISTS `spConsultUser`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spConsultUser` (IN `_CORREO` VARCHAR(50), IN `_CONTRASENA` LONGTEXT)   BEGIN
-	SELECT CORREO,CONTRASENA,NOMBRES FROM usuario WHERE CORREO =_CORREO &&  CONTRASENA=_CONTRASENA;
+	SELECT CORREO,CONTRASENA,NOMBRES,ESTADO,COD_USUARIO FROM usuario WHERE CORREO =_CORREO &&  CONTRASENA=_CONTRASENA;
 END$$
 
 DROP PROCEDURE IF EXISTS `spCreateAssis`$$
@@ -131,10 +131,10 @@ CREATE TABLE IF NOT EXISTS `plan` (
   `NOMBRE` varchar(100) NOT NULL,
   `DESCRIPCION` longtext NOT NULL,
   `TELEFONO` int(12) NOT NULL,
-  `ESTADO` tinyint(1) NOT NULL,
+  `ESTADO` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`COD_PLAN`),
   UNIQUE KEY `NOMBRE` (`NOMBRE`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `plan`
@@ -144,7 +144,11 @@ INSERT INTO `plan` (`COD_PLAN`, `NOMBRE`, `DESCRIPCION`, `TELEFONO`, `ESTADO`) V
 (4, 'Recomposicion corporal', 'Entrenamiento basado en dietas para la recomposicion corporal y ejercicios aerobicos', 0, 1),
 (5, 'Deficit calorico', 'Plan desarrollado para personas en sobre peso; basado en entrenamientos aerobicos y de perdida de calorias', 0, 1),
 (6, 'plan maestro', 'tonificra', 0, 0),
-(7, 'Musculacion', 'Musculo', 1234567845, 0);
+(7, 'Musculacion', 'Musculo', 1234567845, 0),
+(8, 'Musculo', 'Plan elite', 2345654, 0),
+(10, 'Musculoooos', 'Plan elite 2', 2345654, 1),
+(11, 'Kiwi', 'aREPA', 2147483647, 1),
+(12, 'Superman', 'Superman con capa', 2147483647, 1);
 
 -- --------------------------------------------------------
 
@@ -198,7 +202,7 @@ INSERT INTO `recetas` (`COD_RECETA`, `NOMBRE`, `DESCRIPCION`, `COD_USUARIO`, `ES
 (4, 'Baja Kilos 3000', 'Baja 20 kilos en media hora', 2, 0),
 (5, 'Banana Coco', 'Baja 80kilos', 2, 1),
 (12, 'Banano Monstruo', 'Baja Grasita', 2, 0),
-(14, 'Banano Exotico', 'Que se lo que dios quiera', 1, 1),
+(14, 'Banano Exotico', 'Que se lo que dios quiera', 1, 0),
 (15, '200g carbohidratos', 'arroz y pasta', 1, 1),
 (17, 'arroz', 'carbohidratos', 1, 1);
 
@@ -252,12 +256,12 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 --
 
 INSERT INTO `usuario` (`COD_USUARIO`, `NOMBRES`, `APELLIDOS`, `CORREO`, `CELULAR`, `FECHA_NACIMIENTO`, `CONTRASENA`, `COD_ROL`, `ESTADO`) VALUES
-(1, 'Kevin', 'Alocer', 'kevin123@gmail.com', '2147483647', '2002-05-02', '2002', 1, 1),
+(1, 'Kevin', 'Alocer', 'kevin123@gmail.com', '2147483647', '2002-05-02', '2002', 1, 0),
 (2, 'Carmen', 'Valdibia', 'Maricarmen@gmail.com', '3134141', '2002-03-02', '123', 1, 0),
 (8, 'Alejandro', 'Carcia', 'kevin@gmail.com', '32058327', '2002-05-03', 'kevin12', 1, 0),
 (10, 'Mariano', 'Garcia', 'KevinPro@gmail.com', '314573', '2002-04-03', '123123', 1, 0),
 (12, 'Mariano', 'Garcia', 'KevinPro123@gmail.com', '0', '2002-04-09', 'sebastianpro', 1, 1),
-(13, 'Kevin Alberto', 'Valencia', 'kevinalg2020@gmail.com', '313457323', '2023-06-06', 'KevinLO3', 1, 1),
+(13, 'Kevin Alberto', 'Valencia', 'kevinalg2020@gmail.com', '313457323', '2023-06-06', 'KevinLO3', 1, 0),
 (14, 'Kevin Julian', 'Zaragoza', 'Kevincae@gmail.com', '31313', '2000-06-14', '40404', 2, 1),
 (15, 'Kevin Julian', 'Garcia', 'kevin1203@gmail.com', '31321', '2023-06-12', '1234', 1, 1),
 (16, 'Antonio', 'Marcos', 'Maricarmensa@gmail.com', '3131', '2023-06-06', 'test1', 1, 1),
