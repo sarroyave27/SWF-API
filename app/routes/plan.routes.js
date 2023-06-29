@@ -14,4 +14,6 @@ const router = Router();
   router.delete("/Aplan/:COD_PLAN", controllers.deletePlan)
 
   router.get("/AllPlanUser", controllers.findAllPlanUser)
+
+  router.patch("/disable/:COD_PLAN", controllers.disablePlan)
 export default router;

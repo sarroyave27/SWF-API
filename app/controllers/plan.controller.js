@@ -51,12 +51,25 @@ export const deletePlan = async(req,res) => {
         console.error(error);
     }
 }
-
 export const findAllPlanUser = async(req,res) => {
     try {
         const [rows] = await pool.query(`call spGetAllPlanUser()`);
         res.json(rows);
     } catch (error) {
         console.log(error);
+    }
+}
+export const disablePlan = async (req, res) => {
+    const {COD_PLAN} = req.params
+    const {ESTADO} = req.body
+    try {
+        const result = await pool.query(`CALL spDisablePlan(${COD_PLAN},${ESTADO})`)
+        if (result[0].affectedRows == 1) {
+            console.log("Estado afectado");
+            res.json(result[0])
+        } else
+            res.json({ "msg": "No Actualizó" })
+    } catch (error) {
+        console.error(error);
     }
 }

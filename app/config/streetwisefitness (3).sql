@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-06-2023 a las 05:01:21
+-- Tiempo de generación: 29-06-2023 a las 02:22:46
 -- Versión del servidor: 10.4.19-MariaDB
 -- Versión de PHP: 8.0.6
 
@@ -62,6 +62,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spDisablePlan` (IN `_COD_PLAN` BOOL
 	UPDATE plan SET ESTADO = _ESTADO WHERE COD_PLAN= _COD_PLAN;
 END$$
 
+DROP PROCEDURE IF EXISTS `spDisableRecipe`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spDisableRecipe` (IN `_COD_RECETA` INT(100), IN `_ESTADO` BOOLEAN)  BEGIN
+	UPDATE recetas SET ESTADO = _ESTADO WHERE COD_RECETA= _COD_RECETA;
+END$$
+
 DROP PROCEDURE IF EXISTS `spDisableUser`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spDisableUser` (IN `_COD_USUARIO` INT(100), IN `_ESTADO` BOOLEAN)  BEGIN
 	UPDATE usuario SET ESTADO = _ESTADO WHERE COD_USUARIO= _COD_USUARIO;
@@ -109,7 +114,7 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spGetRecipe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetRecipe` ()  BEGIN
-SELECT R.COD_RECETA, R.NOMBRE, R.DESCRIPCION, R.COD_USUARIO, U.CORREO, R.estado FROM recetas R INNER JOIN usuario U ON R.COD_USUARIO = U.COD_USUARIO;
+SELECT R.COD_RECETA, R.NOMBRE, R.DESCRIPCION, R.COD_USUARIO, U.CORREO, R.ESTADO FROM recetas R INNER JOIN usuario U ON R.COD_USUARIO = U.COD_USUARIO;
 END$$
 
 DELIMITER ;
@@ -136,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `plan` (
 
 INSERT INTO `plan` (`COD_PLAN`, `NOMBRE`, `DESCRIPCION`, `ESTADO`) VALUES
 (4, 'Recomposicion corporal', 'Entrenamiento basado en dietas para la recomposicion corporal y ejercicios aerobicos', 1),
-(5, 'Deficit calorico', 'Plan desarrollado para personas en sobre peso; basado en entrenamientos aerobicos y de perdida de calorias', 0);
+(5, 'Deficit calorico', 'Plan desarrollado para personas en sobre peso; basado en entrenamientos aerobicos y de perdida de calorias', 1);
 
 -- --------------------------------------------------------
 
@@ -175,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `recetas` (
   `NOMBRE` varchar(100) NOT NULL,
   `DESCRIPCION` longtext NOT NULL,
   `COD_USUARIO` int(100) DEFAULT NULL,
-  `estado` tinyint(1) NOT NULL,
+  `ESTADO` tinyint(1) NOT NULL,
   PRIMARY KEY (`COD_RECETA`),
   UNIQUE KEY `NOMBRE` (`NOMBRE`),
   KEY `COD_USUARIO` (`COD_USUARIO`)
@@ -185,14 +190,14 @@ CREATE TABLE IF NOT EXISTS `recetas` (
 -- Volcado de datos para la tabla `recetas`
 --
 
-INSERT INTO `recetas` (`COD_RECETA`, `NOMBRE`, `DESCRIPCION`, `COD_USUARIO`, `estado`) VALUES
-(3, 'Limonada de coco', 'Baja 80 Kilos ahora!', 1, 0),
+INSERT INTO `recetas` (`COD_RECETA`, `NOMBRE`, `DESCRIPCION`, `COD_USUARIO`, `ESTADO`) VALUES
+(3, 'Limonada de coco', 'Baja 80 Kilos ahora!', 1, 1),
 (4, 'Baja Kilos 3000', 'Baja 20 kilos en media hora', 2, 0),
-(5, 'Banana Coco', 'Baja 80kilos', 2, 0),
+(5, 'Banana Coco', 'Baja 80kilos', 2, 1),
 (12, 'Banano Monstruo', 'Baja Grasita', 2, 0),
-(14, 'Banano Exotico', 'Que se lo que dios quiera', 1, 0),
-(15, '200g carbohidratos', 'arroz y pasta', 1, 0),
-(17, 'arroz', 'carbohidratos', 1, 0);
+(14, 'Banano Exotico', 'Que se lo que dios quiera', 1, 1),
+(15, '200g carbohidratos', 'arroz y pasta', 1, 1),
+(17, 'arroz', 'carbohidratos', 1, 1);
 
 -- --------------------------------------------------------
 
