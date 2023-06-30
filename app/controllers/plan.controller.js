@@ -73,3 +73,18 @@ export const disablePlan = async (req, res) => {
         console.error(error);
     }
 }
+
+export const updatePlan = async (req, res) => {
+    const {COD_PLAN} = req.params
+    const {NOMBRE,DESCRIPCION,TELEFONO} = req.body
+    try {
+        const result = await pool.query(`CALL spUpdatePlan(${COD_PLAN},'${NOMBRE}','${DESCRIPCION}','${TELEFONO}')`)
+        if (result[0].affectedRows == 1) {
+            console.log("Plan afectado");
+            res.json(result[0])
+        } else
+            res.json({ "msg": "No Actualizó" })
+    } catch (error) {
+        console.error(error);
+    }
+}
