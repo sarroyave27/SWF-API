@@ -54,34 +54,7 @@ export const disableUser = async (req, res) => {
     }
 }
 
-// <--- RECETAS --->
 
-export const createRecipe = async (req, res) => {
-    const {NOMBRE,DESCRIPCION,COD_USUARIO} = req.body
-    try {
-        const result = await pool.query(`CALL spCreateRecipes('${NOMBRE}','${DESCRIPCION}',${COD_USUARIO})`);
-        res.json(result);
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-export const updateRecipe = async (req, res) => {
-    try {
-        const { COD_RECETA } = req.params
-        const { NOMBRE, DESCRIPCION } = req.body
-        
-        const result = await pool.query(`CALL spEditRecipes(${COD_RECETA},'${NOMBRE}','${DESCRIPCION}')`)
-        
-        if(result[0].affectedRows != 0)
-            res.json(result);
-        else
-            res.json({"ERROR":"no actualizo"});
-    } catch (error) {
-        console.error("ERROR: "+error)
-        
-    }
-}
 
 
 /*

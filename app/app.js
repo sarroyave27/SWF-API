@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use("/api", usersRoutes);
 app.use("/plan", planRoutes);
-app.use("/recipe", recipeRoutes);
+app.use("/recipes", recipeRoutes);
 
 app.use((req, res) => {
     res.status(200).json({message: "Bienvenido al BackEnd de StreetWiseFitness"})

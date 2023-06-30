@@ -12,15 +12,6 @@ const router = Router();
   router.patch("/users/:COD_USUARIO", controllers.disableUser)
 
   router.post("/consult", controllers.consultUser) 
-
-  // <--- RECETAS --->
-
-  router.post("/rec", controllers.createRecipe) 
-
-  router.patch("/rec/:COD_RECETA", controllers.updateRecipe)
-
-  
-  //router.delete("/users/:COD_USUARIO", controllers.deleteUsers)
   
 export default router;
 
