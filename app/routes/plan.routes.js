@@ -18,4 +18,5 @@ const router = Router();
   router.patch("/disable/:COD_PLAN", controllers.disablePlan)
 
   router.put("/updatePlan/:COD_PLAN", controllers.updatePlan);
+
 export default router;
