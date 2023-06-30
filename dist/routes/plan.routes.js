@@ -17,5 +17,6 @@ router.patch("/Aplan/:COD_PLAN", controllers.editPlan);
 router["delete"]("/Aplan/:COD_PLAN", controllers.deletePlan);
 router.get("/AllPlanUser", controllers.findAllPlanUser);
 router.patch("/disable/:COD_PLAN", controllers.disablePlan);
+router.put("/updatePlan/:COD_PLAN", controllers.updatePlan);
 var _default = router;
 exports["default"] = _default;
