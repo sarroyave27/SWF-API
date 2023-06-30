@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 29-06-2023 a las 23:18:37
--- Versión del servidor: 10.4.27-MariaDB
--- Versión de PHP: 8.0.25
+-- Servidor: localhost
+-- Tiempo de generación: 30-06-2023 a las 02:49:27
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,12 +29,7 @@ DELIMITER $$
 --
 DROP PROCEDURE IF EXISTS `spConsultUser`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spConsultUser` (IN `_CORREO` VARCHAR(50), IN `_CONTRASENA` LONGTEXT)   BEGIN
-	SELECT CORREO,CONTRASENA,NOMBRES,ESTADO,COD_USUARIO FROM usuario WHERE CORREO =_CORREO &&  CONTRASENA=_CONTRASENA;
-END$$
-
-DROP PROCEDURE IF EXISTS `spCreateAssis`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreateAssis` (IN `_FECHA` DATE)   BEGIN 
-	INSERT INTO asistencia(FECHA) VALUES (_FECHA);
+	SELECT CORREO,CONTRASENA,NOMBRES, ESTADO, COD_USUARIO, COD_ROL FROM usuario WHERE CORREO =_CORREO &&  CONTRASENA=_CONTRASENA;
 END$$
 
 DROP PROCEDURE IF EXISTS `spCreatePlan`$$
@@ -43,8 +38,8 @@ INSERT INTO plan(NOMBRE,DESCRIPCION,TELEFONO) VALUES (_NOMBRE,_DESCRIPCION,_TELE
 END$$
 
 DROP PROCEDURE IF EXISTS `spCreateRecipes`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreateRecipes` (IN `_NOMBRE` VARCHAR(100), IN `_DESCRIPCION` LONGTEXT, IN `_COD_USUARIO` INT(100))   BEGIN 
-INSERT INTO recetas(NOMBRE,DESCRIPCION,COD_USUARIO) VALUES (_NOMBRE,_DESCRIPCION,_COD_USUARIO);
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spCreateRecipes` (IN `_NOMBRE` VARCHAR(100), IN `_DESCRIPCION` LONGTEXT, IN `_INGREDIENTES` LONGTEXT)   BEGIN 
+INSERT INTO recetas(NOMBRE,DESCRIPCION,INGREDIENTES) VALUES (_NOMBRE,_DESCRIPCION,_INGREDIENTES);
 END$$
 
 DROP PROCEDURE IF EXISTS `spCreateUsers`$$
@@ -92,6 +87,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAllPlans` ()   BEGIN
 	SELECT COD_PLAN, NOMBRE, DESCRIPCION,TELEFONO, ESTADO FROM plan;
 END$$
 
+DROP PROCEDURE IF EXISTS `spFindAllRecipes`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAllRecipes` ()   BEGIN
+	SELECT NOMBRE, DESCRIPCION,INGREDIENTES FROM recetas;
+END$$
+
 DROP PROCEDURE IF EXISTS `spFindAllUsers`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAllUsers` ()   BEGIN
 	SELECT COD_USUARIO, NOMBRES, APELLIDOS, FECHA_NACIMIENTO,CORREO,COD_ROL,ESTADO,CELULAR,CONTRASENA FROM usuario;
@@ -105,16 +105,6 @@ END$$
 DROP PROCEDURE IF EXISTS `spFindUser`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindUser` (IN `_COD_USUARIO` INT(10))   BEGIN
 	SELECT COD_USUARIO,NOMBRES,APELLIDOS,CORREO,CELULAR,FECHA_NACIMIENTO FROM usuario WHERE COD_USUARIO =_COD_USUARIO;
-END$$
-
-DROP PROCEDURE IF EXISTS `spGetAllPlanUser`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetAllPlanUser` ()   BEGIN 
-SELECT A.COD_USERPLAN, A.COD_USUARIO, U.CORREO, A.COD_PLAN, P.NOMBRE, P.DESCRIPCION, P.TELEFONO, P.ESTADO FROM planusuario A INNER JOIN PLAN P ON A.COD_PLAN = P.COD_PLAN INNER JOIN USUARIO U ON A.COD_USUARIO = U.COD_USUARIO;
-END$$
-
-DROP PROCEDURE IF EXISTS `spGetRecipe`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetRecipe` ()   BEGIN
-SELECT R.COD_RECETA, R.NOMBRE, R.DESCRIPCION, R.COD_USUARIO, U.CORREO, R.ESTADO FROM recetas R INNER JOIN usuario U ON R.COD_USUARIO = U.COD_USUARIO;
 END$$
 
 DELIMITER ;
@@ -186,25 +176,31 @@ CREATE TABLE IF NOT EXISTS `recetas` (
   `COD_RECETA` int(100) NOT NULL AUTO_INCREMENT,
   `NOMBRE` varchar(100) NOT NULL,
   `DESCRIPCION` longtext NOT NULL,
+  `INGREDIENTES` longtext NOT NULL,
   `COD_USUARIO` int(100) DEFAULT NULL,
-  `ESTADO` tinyint(1) NOT NULL,
+  `ESTADO` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`COD_RECETA`),
   UNIQUE KEY `NOMBRE` (`NOMBRE`),
   KEY `COD_USUARIO` (`COD_USUARIO`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `recetas`
 --
 
-INSERT INTO `recetas` (`COD_RECETA`, `NOMBRE`, `DESCRIPCION`, `COD_USUARIO`, `ESTADO`) VALUES
-(3, 'Limonada de coco', 'Baja 80 Kilos ahora!', 1, 1),
-(4, 'Baja Kilos 3000', 'Baja 20 kilos en media hora', 2, 0),
-(5, 'Banana Coco', 'Baja 80kilos', 2, 1),
-(12, 'Banano Monstruo', 'Baja Grasita', 2, 0),
-(14, 'Banano Exotico', 'Que se lo que dios quiera', 1, 0),
-(15, '200g carbohidratos', 'arroz y pasta', 1, 1),
-(17, 'arroz', 'carbohidratos', 1, 1);
+INSERT INTO `recetas` (`COD_RECETA`, `NOMBRE`, `DESCRIPCION`, `INGREDIENTES`, `COD_USUARIO`, `ESTADO`) VALUES
+(3, 'Limonada de coco', 'Baja 80 Kilos ahora!', '', 1, 1),
+(4, 'Baja Kilos 3000', 'Baja 20 kilos en media hora', '', 2, 0),
+(5, 'Banana Coco', 'Baja 80kilos', '', 2, 1),
+(12, 'Banano Monstruo', 'Baja Grasita', '', 2, 0),
+(14, 'Banano Exotico', 'Que se lo que dios quiera', '', 1, 0),
+(15, '200g carbohidratos', 'arroz y pasta', '', 1, 1),
+(17, 'arroz', 'carbohidratos', '', 1, 1),
+(18, 'Banano Exquisito', 'Banano licuadi', 'Banano leche', NULL, 1),
+(19, 'Ejercitacion 3', 'Una solucion a tu vida sedentaria', 'Maza, arroz y Verduras', NULL, 1),
+(20, 'Arroz Con Jamon y queso', 'Exquisita receta la cual tiene com base el arroz', 'Arroz, Jamon, Queso', NULL, 1),
+(21, 'Arroz Con Jamon', 'Exquisita receta la cual tiene com base el arroz', 'Arroz, Jamon', NULL, 1),
+(22, 'Arroz Increible', 'Exquisita receta la cual tiene como base el arroz', 'Arroz.', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -256,7 +252,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 --
 
 INSERT INTO `usuario` (`COD_USUARIO`, `NOMBRES`, `APELLIDOS`, `CORREO`, `CELULAR`, `FECHA_NACIMIENTO`, `CONTRASENA`, `COD_ROL`, `ESTADO`) VALUES
-(1, 'Kevin', 'Alocer', 'kevin123@gmail.com', '2147483647', '2002-05-02', '2002', 1, 0),
+(1, 'Kevin', 'Alocer', 'kevin123@gmail.com', '2147483647', '2002-05-02', '12345678', 1, 1),
 (2, 'Carmen', 'Valdibia', 'Maricarmen@gmail.com', '3134141', '2002-03-02', '123', 1, 0),
 (8, 'Alejandro', 'Carcia', 'kevin@gmail.com', '32058327', '2002-05-03', 'kevin12', 1, 0),
 (10, 'Mariano', 'Garcia', 'KevinPro@gmail.com', '314573', '2002-04-03', '123123', 1, 0),
@@ -267,7 +263,7 @@ INSERT INTO `usuario` (`COD_USUARIO`, `NOMBRES`, `APELLIDOS`, `CORREO`, `CELULAR
 (16, 'Antonio', 'Marcos', 'Maricarmensa@gmail.com', '3131', '2023-06-06', 'test1', 1, 1),
 (17, 'Arnoldo', 'Cabal', 'ArCabal@gmail.com', '313433', '2023-06-05', '987', 1, 1),
 (18, 'Avaro', 'Guitierez', 'Alva@gmail.com', '314141', '2023-06-13', '123v', 1, 1),
-(19, 'Isabella', 'Hernandez', 'isabella@gmail.com', '423825556', '2005-05-04', '123', 1, 1);
+(19, 'Isabella', 'Hernandez', 'isabella@gmail.com', '423825556', '2005-05-04', '123456789', 1, 1);
 
 --
 -- Restricciones para tablas volcadas
