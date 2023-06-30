@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 30-06-2023 a las 02:49:27
+-- Tiempo de generación: 30-06-2023 a las 17:44:24
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -89,7 +89,7 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spFindAllRecipes`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spFindAllRecipes` ()   BEGIN
-	SELECT NOMBRE, DESCRIPCION,INGREDIENTES FROM recetas;
+	SELECT NOMBRE, DESCRIPCION,INGREDIENTES, ESTADO FROM recetas;
 END$$
 
 DROP PROCEDURE IF EXISTS `spFindAllUsers`$$
@@ -252,13 +252,13 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 --
 
 INSERT INTO `usuario` (`COD_USUARIO`, `NOMBRES`, `APELLIDOS`, `CORREO`, `CELULAR`, `FECHA_NACIMIENTO`, `CONTRASENA`, `COD_ROL`, `ESTADO`) VALUES
-(1, 'Kevin', 'Alocer', 'kevin123@gmail.com', '2147483647', '2002-05-02', '12345678', 1, 1),
-(2, 'Carmen', 'Valdibia', 'Maricarmen@gmail.com', '3134141', '2002-03-02', '123', 1, 0),
+(1, 'Kevin', 'Alocer', 'kevin123@gmail.com', '2147483647', '2002-05-02', '12345678', 3, 1),
+(2, 'Carmen', 'Valdibia', 'Maricarmen@gmail.com', '3134141', '2002-03-02', '123', 1, 1),
 (8, 'Alejandro', 'Carcia', 'kevin@gmail.com', '32058327', '2002-05-03', 'kevin12', 1, 0),
 (10, 'Mariano', 'Garcia', 'KevinPro@gmail.com', '314573', '2002-04-03', '123123', 1, 0),
-(12, 'Mariano', 'Garcia', 'KevinPro123@gmail.com', '0', '2002-04-09', 'sebastianpro', 1, 1),
+(12, 'Mariano', 'Garcia', 'KevinPro123@gmail.com', '0', '2002-04-09', 'sebastianpro', 1, 0),
 (13, 'Kevin Alberto', 'Valencia', 'kevinalg2020@gmail.com', '313457323', '2023-06-06', 'KevinLO3', 1, 0),
-(14, 'Kevin Julian', 'Zaragoza', 'Kevincae@gmail.com', '31313', '2000-06-14', '40404', 2, 1),
+(14, 'Kevin Julian', 'Zaragoza', 'Kevincae@gmail.com', '31313', '2000-06-14', '12345678', 2, 1),
 (15, 'Kevin Julian', 'Garcia', 'kevin1203@gmail.com', '31321', '2023-06-12', '1234', 1, 1),
 (16, 'Antonio', 'Marcos', 'Maricarmensa@gmail.com', '3131', '2023-06-06', 'test1', 1, 1),
 (17, 'Arnoldo', 'Cabal', 'ArCabal@gmail.com', '313433', '2023-06-05', '987', 1, 1),
