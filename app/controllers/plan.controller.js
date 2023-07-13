@@ -1,5 +1,5 @@
 import { pool } from "../db.js";
-
+// Función para encontrar un plan por su código
 export const findAPlan = async(req,res) => {
     const {COD_PLAN} = req.params
     try {
@@ -9,6 +9,7 @@ export const findAPlan = async(req,res) => {
         console.error("Ha ocurrido un error");
     }
 }
+// Función para crear un nuevo plan
 export const createPlan = async(req,res) => {
     const {NOMBRE,DESCRIPCION,TELEFONO} = req.body
     try {
@@ -18,6 +19,7 @@ export const createPlan = async(req,res) => {
         console.log(error);
     }
 }
+// Función para encontrar todos los planes
 export const findAllPlans = async(req,res) => {
     try {
         const [rows] = await pool.query(`CALL spFindAllPlans()`);
@@ -26,6 +28,7 @@ export const findAllPlans = async(req,res) => {
         console.log(error);
     }
 }
+// Función para editar un plan
 export const editPlan = async(req,res) => {
     const {COD_PLAN} = req.params
     const {DESCRIPCION,TELEFONO, ESTADO} = req.body
@@ -39,6 +42,7 @@ export const editPlan = async(req,res) => {
         console.error(error);
     }
 }
+// Función para eliminar un plan
 export const deletePlan = async(req,res) => {
     const {COD_PLAN} = req.params
     try {
@@ -51,6 +55,8 @@ export const deletePlan = async(req,res) => {
         console.error(error);
     }
 }
+
+// Función para encontrar todos los planes de usuario
 export const findAllPlanUser = async(req,res) => {
     try {
         const [rows] = await pool.query(`call spGetAllPlanUser()`);
@@ -59,6 +65,7 @@ export const findAllPlanUser = async(req,res) => {
         console.log(error);
     }
 }
+// Función para desactivar un plan
 export const disablePlan = async (req, res) => {
     const {COD_PLAN} = req.params
     const {ESTADO} = req.body
@@ -73,7 +80,7 @@ export const disablePlan = async (req, res) => {
         console.error(error);
     }
 }
-
+// Función para actualizar un plan
 export const updatePlan = async (req, res) => {
     const {COD_PLAN} = req.params
     const {NOMBRE,DESCRIPCION,TELEFONO} = req.body

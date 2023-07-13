@@ -1,7 +1,7 @@
 import { config } from "dotenv"
-
+// Carga las variables de entorno desde el archivo .env
 config()
-
+// Configuración de las variables de entorno
 export const PORT = process.env.PORT || 3000
 export const DB_USER = process.env.DB_USER || "root"
 export const DB_PASSWORD = process.env.DB_PASSWORD || ""

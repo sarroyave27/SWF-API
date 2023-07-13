@@ -1,5 +1,5 @@
 import { pool } from "../db.js";
-
+// Función para obtener todas las recetas
 export const getAllRecipes = async (req, res) => {
     try {
         const [rows] = await pool.query(`CALL spFindAllRecipes()`);
@@ -8,7 +8,7 @@ export const getAllRecipes = async (req, res) => {
         console.log(error);
     }
 }
-
+// Función para desactivar una receta
 export const disableRecipe = async (req, res) => {
     const {COD_RECETA} = req.params
     const {ESTADO} = req.body
@@ -24,6 +24,7 @@ export const disableRecipe = async (req, res) => {
     }
 }
 
+// Función para crear una nueva receta
 export const createRecipe = async (req, res) => {
     const {NOMBRE,DESCRIPCION,INGREDIENTES} = req.body
     try {
@@ -33,7 +34,7 @@ export const createRecipe = async (req, res) => {
         console.log(error);
     }
 }
-
+// Función para actualizar una receta
 export const updateRecipe = async (req, res) => {
     try {
         const { COD_RECETA } = req.params
